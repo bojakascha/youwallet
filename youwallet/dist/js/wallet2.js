@@ -200,7 +200,7 @@ async function send(target_address, amount) {
             index: utxo.vout,
             witnessUtxo: {
                 script: Buffer.from(bitcoin.address.toOutputScript(
-                    bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network }).address, network
+                    bitcoin.payments.p2wpkh({ pubkey: keyPair.publicKey, network }).address, network
                 )),
                 value: BigInt(utxo.value),  // Ensure the value is a BigInt
             },
