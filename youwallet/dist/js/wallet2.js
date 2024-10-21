@@ -253,3 +253,5 @@ async function send(target_address, amount) {
     navigateTo('#wallet_home');
 }
 
+// new comment
+
