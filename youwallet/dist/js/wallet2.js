@@ -9,6 +9,7 @@ const blockcypherTestnet = {
     scriptHash: 0x1f,  // Address starts with 2 for P2SH
     wif: 0xef  // Testnet WIF
 };
+const token = 'd0ffad34bf824bc58fc144771993ebc5';
 
 //const network = window.bitcoin.networks.testnet;
 const network = blockcypherTestnet;
@@ -72,21 +73,26 @@ function deriveSeed(mnemonic) {
 }
 
 // // Function to create HD wallet root node
-// function createRootNode(seed) {
-//     const root = bip32.fromSeed(seed, network);
-//     return root;
-// }
-
-// function deriveAddress(root, index) {
-//     const path = `m/44'/${network_key}'/0'/0/${index}`; 
-//     const child = root.derivePath(path);
-//     const { address: address } = bitcoin.payments.p2wpkh({
-//         pubkey: child.publicKey,
-//         network: network
-//     });
-//     console.log("Address is: " + address);
-//     return address;
-// }
+async function fetBalanceBlockStream(address) {
+    const url = `https://blockstream.info/testnet/api/address/${address}`;
+    
+    try {
+        const response = await fetch(url);
+        
+        // Check if the request was successful
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Blockstream returns balance in satoshis
+        console.log(`Balance for address ${address}: ${data.chain_stats.funded_txo_sum} satoshis`);
+    } catch (error) {
+        console.error('Error fetching balance:', error.message);
+    }   
+    return data.chain_stats.funded_txo_sum;
+}
 
 async function fetchBalance(address) {
     //const apiUrl = `https://api.blockcypher.com/v1/btc/test3/addrs/${address}/balance`;
@@ -165,10 +171,9 @@ function getKeyPair(child_index) {
 
 async function getUTXOs(pubKey) {
     console.log(`getUTXOs pubKey: ${pubKey}`);
-    const { address } = bitcoin.payments.p2pkh({ pubkey: pubKey, network: network });
+    const { address } = bitcoin.payments.p2wpkh({ pubkey: pubKey, network: network });
     console.log(`Testnet Address: ${address}`);
-
-    const apiUrl = `https://api.blockcypher.com/v1/bcy/test/addrs/${address}?unspentOnly=true`;
+    const apiUrl = `https://api.blockcypher.com/v1/bcy/test/addrs/${address}?token=${token}`;
     console.log("Quering: " + apiUrl);
     try {
         const response = await fetch(apiUrl);
@@ -195,6 +200,7 @@ async function send(target_address, amount) {
     const psbt = new bitcoin.Psbt({ network });
 
     utxos.forEach(utxo => {
+        console.log("UTXO being used:", utxo);
         psbt.addInput({
             hash: utxo.txid,
             index: utxo.vout,
@@ -233,24 +239,53 @@ async function send(target_address, amount) {
     }
 
     // Add the change output if needed
-    // const change = totalInputValue - amount - fee;
-    // if (change > 0) {
-    //     const changeAddress = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network }).address;
-    //     psbt.addOutput({
-    //         address: changeAddress,
-    //         value: Number(change),
-    //     });
-    // }
+    const change = totalInputValue - amount - fee;
+    if (change > 0) {
+         const changeAddress = bitcoin.payments.p2wpkh({ pubkey: keyPair.publicKey, network }).address;
+         psbt.addOutput({
+             address: changeAddress,
+             value: BigInt(change),
+         });
+     }
 
     // Sign the transaction inputs
     utxos.forEach((utxo, index) => {
+        console.log("UTXO being signed:", utxo);
         psbt.signInput(index, keyPair);
     });
 
-    const rawTransaction = psbt.extraxtTransaction().toHex();
+    psbt.finalizeAllInputs();
+
+    const rawTransaction = psbt.extractTransaction().toHex();
     console.log('Raw transaction hex:', rawTransaction);
 
-    navigateTo('#wallet_home');
+    const apiUrl = `https://api.blockcypher.com/v1/bcy/test/txs/push?token=${token}`;
+    console.log("Posting: " + apiUrl);
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                tx: rawTransaction
+            })
+        });
+
+        // Check if the request was successful (status code 2xx)
+        if (!response.ok) {
+            const errorDetails = await response.json();
+            console.error('Error Details:', errorDetails);
+            throw new Error(`Error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Transacion broadcasted: " + data);
+    } catch (error) {
+        console.error(error.message);
+    }
+
+    //navigateTo('#wallet_home');
 }
 
 // new comment
