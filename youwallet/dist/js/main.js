@@ -159,9 +159,10 @@ function generateQRCode(wallet_address) {
     qrcodeDiv.innerHTML = ""; // Clear any existing QR code
     new QRCode(qrcodeDiv, {
         text: wallet_address,      // The address to encode in the QR code
-        width: 200,               // Width of the QR code
-        height: 200,              // Height of the QR code
-        correctLevel: QRCode.CorrectLevel.H  // High error correction level
+        width: 300,               // Width of the QR code
+        height: 300,              // Height of the QR code
+        correctLevel: QRCode.CorrectLevel.H,  // High error correction level
+        quietZone: 10
     });
 }
 
