@@ -5,87 +5,144 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouWallet</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles2.css">
+    <!--<link rel="manifest" href="manifest.json">-->
 </head>
 
 <body>
-    <div id="wallet_home" class="wallet-container" style="display: none;">
-        <p><span class="discrete-text">Balance:</span><span class="large-text">&nbsp;</span><span class="large-text"
-                id="wallet_balance"></span><span class="large-text">&nbsp;</span><span class="discrete-text">BTC</span>
-        </p>
-        <button onclick="navigateTo('#send')">Send</button>
-        <button onclick="navigateTo('#receive')">Receive</button>
-    </div>
+    <header>
+        <button onclick="window.history.back()" class="close-button" id="close-button">X</button>
+        <h1>YOUWALLET</h1>
+    </header>
+    <main>
+        <div id="wallet_home" class="wallet-container" style="display: none;">
+            <div class="header-row">
+                <p class="discrete-text">Balance</p>
+            </div>
+            <div class="row">
+                <p id="wallet_balance" class="large-text">...</p>
+                <p class="discrete-text">sats</p>
+            </div>
+            <div class="last-row">
+                <button class="blue-button" onclick="navigateTo('#send')">Send</button>
+                <button class="blue-button" onclick="navigateTo('#receive')">Receive</button>
+            </div>
+        </div>
 
-    <div id="no_wallet" class="wallet-container" style="display: none;">
-        <p class="discrete-text">No wallet found on this device. Restore an existing wallet or create a new one</p>
-        <button onclick="navigateTo('#restore')">Restore</button>
-        <button onclick="navigateTo('#create')">Create</button>
-    </div>
+        <div id="no_wallet" class="wallet-container" style="display: none;">
+            <div class="header-row">
+                <p class="discrete-text">No wallet found on this device</p><br/><p class="discrete-text">Restore an existing wallet or create a new one
+                </p>
+            </div>
+            <div class="last-row">
+                <button class="blue-button" onclick="navigateTo('#restore')">Restore</button>
+                <button class="blue-button" onclick="navigateTo('#create')">Create</button>
+            </div>
+        </div>
 
-    <div id="restore" class="wallet-container" style="display: none;">
-        <p class="discrete-text">To restore an old wallet, enter your seed phrase below</p>
-        <form onsubmit="event.preventDefault(); createWallet(document.getElementById('mnemonic_to_restore').value);">
-            <input type="text" id="mnemonic_to_restore" required></input>
-            <button type="submit">Restore</button>
-        </form>
-    </div>
+        <div id="restore" class="wallet-container" style="display: none;">
+            <div class="header-row">Restore</div>
+            <div class="row">
+                <input type="text" class="address-input" id="mnemonic_to_restore" placeholder="Seed phrase" required></input>
+            </div>
+            <div class="last-row">
+                <button class="blue-button" onclick="createWallet(document.getElementById('mnemonic_to_restore').value);">Restore</button>
+            </div>
+        </div>
 
-    <div id="create" class="wallet-container" style="display: none;">
-        <p class="discrete-text">Make sure you record your seed phrase below</p>
-        <form onsubmit="event.preventDefault(); createWallet(document.getElementById('mnemonic').value); ">
-            <div id="mnemonicTable"></div>
-            <button type="submit">Create Wallet</button>
-            <input type="hidden" id="mnemonic" />
-        </form>
-    </div>
+        <div id="create" class="wallet-container" style="display: none;">
+            <div class="header-row">
+                <p class="discrete-text">Create</p>
+            </div>
+            <div class="row">
+                <p class="discrete-text">Record your seed phrase</p>
+            </div>
+           
+                <div id="mnemonic-container" class="mnemonic-container"></div>
+           
+            <div class="last-row">
+                <button class="blue-button" onclick="createWallet(document.getElementById('mnemonic').value);">Create Wallet</button>  
+            </div>
+                <input type="hidden" id="mnemonic" />
+        </div>
 
-    <div id="send" class="wallet-container" style="display: none;">
-        <p class="discrete-text">Enter or scan target address:</p>
-        <form
-            onsubmit="event.preventDefault(); send(document.getElementById('target_address').value, document.getElementById('target_amount').value)">
-            <input type="text" id="target_address" required>
-            <button id="start_scan_button" onclick="startScan()">Scan QR Code</button>
-            <button id="stop_scan_button" style="display: none;" onclick="stopScan()">Stop Scanning</button>
+        <div id="send" class="wallet-container">
+            <div class="header-row">
+                <p class="discrete-text">Send</p>
+            </div>
+
+            <div class="row">
+                <input type="text" id="target_address" class="address-input" placeholder="Target Address" required />
+                <!-- <button class="scan-button" id="start_scan_button" onclick="startScan()">Scan <img class="icon-img" src="./icons/qrcode4.png"
+                      /></button>-->
+                <button class="footer-button" id="start_scan_button" onclick="startScan()"><img class="icon-img" src="./icons/qrcode4.png"
+                    /></button>
+            </div>
+            <!-- <button id="stop_scan_button" style="display: none;" onclick="stopScan()">Stop Scanning</button>-->
             <div id="qr-reader" width="600px"></div>
-            <div style="display: flex;">
-                <p class="discrete-text">Amount:</p>
-                <p>&nbsp;</p>
-                <input type="text" id="target_amount" required>
-                <p>&nbsp;</p>
+
+            <div class="row">
+                <input type="text" class="amount-input" id="target_amount" placeholder="Amount" required />
                 <p class="discrete-text">Sats</p>
             </div>
-            <button type="submit">Send</button>
-        </form>
-        <button onclick="navigateTo('#wallet_home')">Back</button>
-    </div>
+            <div class="last-row">
+                <button class="blue-button" type="submit"
+                    onclick="send(document.getElementById('target_address').value, document.getElementById('target_amount').value)">Send</button>
+            </div>
+        </div>
 
 
-    <div id="send_confirmation" class="wallet-container" style="display: none;">
-        <p class="large-text">Confirm transfer</p>
-        <p class="discrete-text">Receiving address:</p>
-        <input type="text" id="confirm_target_address" readonly>
-        <p class="discrete-text">Amount:</p>
-        <input type="text" id="confirm_target_amount" readonly>
-        <button onclick="navigateTo('#wallet_home')">Confirm</button>
-        <button onclick="navigateTo('#wallet_home')">Cancel</button>
-    </div>
+        <div id="send_confirmation" class="wallet-container" style="display: none;">
+            <p class="large-text">Confirm transfer</p>
+            <p class="discrete-text">Receiving address:</p>
+            <input type="text" id="confirm_target_address" readonly>
+            <p class="discrete-text">Amount:</p>
+            <input type="text" id="confirm_target_amount" readonly>
+            <button onclick="navigateTo('#wallet_home')">Confirm</button>
+            <button onclick="navigateTo('#wallet_home')">Cancel</button>
+        </div>
 
-    <div id="receive" class="wallet-container" style="display: none;">
-        <p class="discrete-text">Use the following address to send assets to this wallet:</p>
-        <input type="text" id="wallet_address" value=".." readonly>
-        <button id="copyButton" onclick="copyAddress()">Copy Address</button>
-        <div id="qrcode" style="margin: 20px auto;"></div>
+        <div id="settings" class="wallet-container" style="display: none;">
+            <div class="header-row"><p class="discrete-text">Settings</p></div>
+            <div class="row"><p class="discrete-text">abc</p></div>
+            <div class="row"><p class="discrete-text">def</p></div>
+        </div>
 
-        <button onclick="navigateTo('#wallet_home')">Back</button>
-    </div>
+        <div id="receive" class="wallet-container" style="display: none;">
+            <div class="header-row">
+                <p class="discrete-text">Receive address</p>
+            </div>
+            <div class="row">
+                <div id="qrcode" style="margin: 20px auto;"></div>
+            </div>
+            <div class="row">
+                <input type="text" class="address-input" id="wallet_address" readonly />
+                
+                <!--<button class="scan-button" id="copyButton" onclick="copyAddress()">Copy</button>
+                <button class="scan-button" id="copyButton" onclick="copyAddress()">Share</button>-->
+            </div>
+            <div class="row">
+                <button class="footer-button" id="start_scan_button" onclick="startScan()"><img class="icon-img" src="./icons/copy.png"
+                    /></button>
+                    <button class="footer-button" id="start_scan_button" onclick="startScan()"><img class="icon-img" src="./icons/share1.png"
+                        /></button>
+            </div>
+            <div class="last-row">
+                <button class="blue-button" onclick="navigateTo('#wallet_home')">Done</button>
+            </div>
+        </div>
 
-    <script src="bundle.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <script src="https://unpkg.com/bip39@3.0.4/dist/bip39.browser.min.js"></script>
-    <script src="js/wallet2.js"></script>
-    <script src="js/main.js"></script>
+
+        <script src="bundle.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+        <!--<script src="https://unpkg.com/bip39@3.0.4/dist/bip39.browser.min.js"></script>-->
+        <script src="js/wallet2.js"></script>
+        <script src="js/main.js"></script>
+    </main>
+    <footer>
+        <button class="settings-button" id="settings-button" onclick="navigateTo('#settings')">...</button>
+    </footer>
 </body>
 
 </html>

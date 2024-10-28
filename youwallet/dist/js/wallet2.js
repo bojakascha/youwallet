@@ -137,7 +137,6 @@ async function scanAddresses(xpub, gapLimit = 2, maxAddresses = 1000) {
 
 async function updateWalletBalance(wallet) {
 
-    if (false) return 0.1337;
     console.log("updateWalletBalance..");
     xpub = wallet.xpub;
 
@@ -146,13 +145,13 @@ async function updateWalletBalance(wallet) {
 
     // Calculate total balance in satoshis
     const totalBalanceSatoshis = usedAddresses.reduce((acc, addr) => acc + addr.balance, 0);
-    const totalBalanceBTC = totalBalanceSatoshis / 1e8;
+    //const totalBalanceBTC = totalBalanceSatoshis / 1e8;
 
     console.log('Used Addresses:', usedAddresses);
-    console.log(`Total Balance: ${totalBalanceSatoshis} satoshis (${totalBalanceBTC} BTC)`);
+    //console.log(`Total Balance: ${totalBalanceSatoshis} satoshis (${totalBalanceBTC} BTC)`);
 
     //wallet.balance = totalBalanceBTC;
-    return totalBalanceBTC;
+    return totalBalanceSatoshis;
 }
 
 

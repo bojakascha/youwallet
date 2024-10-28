@@ -1,4 +1,30 @@
+// Function to trigger the install prompt
+/*function triggerInstallPrompt() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt(); // Show the install prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+            } else {
+                console.log('User dismissed the install prompt');
+            }
+            deferredPrompt = null; // Clear the deferredPrompt variable
+        });
+    }
+}*/
 
+/*if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+            .then((registration) => {
+                console.log('Service Worker registered with scope:', registration.scope);
+            }).catch((error) => {
+                console.log('Service Worker registration failed:', error);
+            });
+    });
+}*/
+
+console.log("JS running");
 
 // ** Navigation logic
 const pages = {
@@ -8,11 +34,12 @@ const pages = {
     '#restore': 'restore',
     '#send': 'send',
     '#receive': 'receive',
-    '#send_confirmation': 'send_confirmation'
+    '#send_confirmation': 'send_confirmation',
+    '#settings': 'settings'
 };
 
-function displayMnemonicTable(mnemonic) {
-    const container = document.getElementById('mnemonicContainer');
+/*function displayMnemonicTable(mnemonic) {
+    const container = document.getElementById('mnemonic-container');
     container.innerHTML = ''; // Clear any existing content
 
     const words = mnemonic.split(' ');
@@ -32,7 +59,7 @@ function displayMnemonicTable(mnemonic) {
 
         for (let j = 0; j < 4; j++) { // 4 columns
             const cell = document.createElement('td');
-            cell.style.border = '1px solid #000';
+            cell.style.border = '1px solid #fff';
             cell.style.padding = '8px';
             cell.style.textAlign = 'center';
             cell.style.fontSize = '16px';
@@ -45,6 +72,11 @@ function displayMnemonicTable(mnemonic) {
 
     container.appendChild(table);
 
+}*/
+
+function setSpecialButtonsVisibility(closeButtonVisible, settingsButtonVisible) {
+    document.getElementById('close-button').style.display = closeButtonVisible ? '' : 'none';
+    document.getElementById('settings-button').style.display = settingsButtonVisible ? '' : 'none';
 }
 
 
@@ -55,6 +87,7 @@ function navigateTo(hash) {
 
 function renderPage() {
     let hash = window.location.hash;
+    console.log("RenderPAge, hash: " + hash);
 
     if (!hash) {
         hash = '#wallet_home';
@@ -66,6 +99,7 @@ function renderPage() {
         if (!allowedHashes.includes(hash)) {
             hash = '#no_wallet';
             window.location.hash = hash;
+            console.log("No wallet");            
         }
     }
 
@@ -76,25 +110,48 @@ function renderPage() {
 
     // Show current page
     const pageToShow = pages[hash] || pages['#wallet_home'];
-    document.getElementById(pageToShow).style.display = 'block';
+    document.getElementById(pageToShow).style.display = 'flex';
 
     if (hash == '#wallet_home') {
         renderWalletHome();
+        setSpecialButtonsVisibility(false, true);
     }
 
     if (hash == '#create') {
         renderCreate();
+        setSpecialButtonsVisibility(true, true);
     }
 
     if (hash == '#receive') {
         renderReceive();
+        setSpecialButtonsVisibility(true, true);
     }
 
     if (hash == '#send_confirmation') {
         renderSendConfirmation();
+        setSpecialButtonsVisibility(true, true);
+    }
+
+    if (hash == '#no_wallet') {
+        setSpecialButtonsVisibility(false, true);
+    }
+
+    if (hash == '#restore') {
+        setSpecialButtonsVisibility(true, true);
+    }
+
+    if (hash == '#send') {
+        setSpecialButtonsVisibility(true, true);
+    }
+
+    if (hash == '#settings') {
+        setSpecialButtonsVisibility(true, false);
     }
 
 }
+
+
+
 
 async function renderWalletHome() {
     const wallet = getWallet();
@@ -114,7 +171,7 @@ function renderCreate() {
     const mnemonic = generateMnemonic();
     document.getElementById('mnemonic').value = mnemonic;
 
-    const container = document.getElementById('mnemonicTable');
+    const container = document.getElementById('mnemonic-container');
     container.innerHTML = '';
 
 
@@ -225,10 +282,14 @@ function stopScan() {
 
 
 
+
 // Event listener for hash changes
 window.addEventListener('hashchange', renderPage);
 
 // Initial render
-renderPage();
+//renderPage();
 
+document.addEventListener('DOMContentLoaded', () => {
+    renderPage(); 
+});
 
