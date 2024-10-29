@@ -15,7 +15,7 @@
         <h1>YOUWALLET</h1>
     </header>
     <main>
-        <div id="wallet_home" class="wallet-container" style="display: none;">
+        <div id="wallet_home" class="wallet-container">
             <div class="header-row">
                 <p class="discrete-text">Balance</p>
             </div>
@@ -23,6 +23,9 @@
                 <p id="wallet_balance" class="large-text">...</p>
                 <p class="discrete-text">sats</p>
             </div>
+            <!--<div class="row">
+                <p class="discrete-text">&approx; 20 USD</p>
+            </div>-->
             <div class="last-row">
                 <button class="blue-button" onclick="navigateTo('#send')">Send</button>
                 <button class="blue-button" onclick="navigateTo('#receive')">Receive</button>
@@ -66,7 +69,7 @@
                 <input type="hidden" id="mnemonic" />
         </div>
 
-        <div id="send" class="wallet-container">
+        <div id="send" class="wallet-container" style="display: none;">
             <div class="header-row">
                 <p class="discrete-text">Send</p>
             </div>
@@ -77,8 +80,8 @@
                       /></button>-->
                 <button class="footer-button" id="start_scan_button" onclick="startScan()"><img class="icon-img" src="./icons/qrcode4.png"
                     /></button>
+                    <button id="stop_scan_button" style="display: none;" onclick="stopScan()">Stop Scanning</button>
             </div>
-            <!-- <button id="stop_scan_button" style="display: none;" onclick="stopScan()">Stop Scanning</button>-->
             <div id="qr-reader" width="600px"></div>
 
             <div class="row">
@@ -87,25 +90,43 @@
             </div>
             <div class="last-row">
                 <button class="blue-button" type="submit"
-                    onclick="send(document.getElementById('target_address').value, document.getElementById('target_amount').value)">Send</button>
+                    onclick="navigateTo('#send_confirmation')">Send</button>
             </div>
         </div>
 
 
         <div id="send_confirmation" class="wallet-container" style="display: none;">
-            <p class="large-text">Confirm transfer</p>
-            <p class="discrete-text">Receiving address:</p>
-            <input type="text" id="confirm_target_address" readonly>
-            <p class="discrete-text">Amount:</p>
-            <input type="text" id="confirm_target_amount" readonly>
-            <button onclick="navigateTo('#wallet_home')">Confirm</button>
-            <button onclick="navigateTo('#wallet_home')">Cancel</button>
+            <div class="header-row">
+                <p class="discrete-text">Confirm Transfer</p>
+            </div>
+            <div class="row">
+                <p class="discrete-text">Receiving address:</p>  
+            </div>
+            <div class="row">
+                <input class="address-input" type="text" id="confirm_target_address" readonly>
+            </div>
+            <div class="row">
+                <p>&nbsp;</p>
+            </div>
+            <div class="row">
+                <p class="discrete-text">Amount:</p>  
+            </div>
+            <div class="row">
+                <input class="amount-input" type="text" id="confirm_target_amount" readonly>
+                <p class="discrete-text">sats</p>
+            </div>
+            <div class="last-row">
+                <button class="blue-button" onclick="navigateTo('#wallet_home')">Confirm</button>
+            </div>
         </div>
 
         <div id="settings" class="wallet-container" style="display: none;">
             <div class="header-row"><p class="discrete-text">Settings</p></div>
-            <div class="row"><p class="discrete-text">abc</p></div>
-            <div class="row"><p class="discrete-text">def</p></div>
+            <div class="row"><p class="discrete-text">Secondary currency</p></div>
+            <div class="row"><p class="discrete-text">Network selection</p></div>
+            <div class="row"><p class="discrete-text">Provider</p></div>
+            <div class="row"><p class="discrete-text">Remove wallet</p></div>
+            
         </div>
 
         <div id="receive" class="wallet-container" style="display: none;">
@@ -117,14 +138,11 @@
             </div>
             <div class="row">
                 <input type="text" class="address-input" id="wallet_address" readonly />
-                
-                <!--<button class="scan-button" id="copyButton" onclick="copyAddress()">Copy</button>
-                <button class="scan-button" id="copyButton" onclick="copyAddress()">Share</button>-->
             </div>
             <div class="row">
-                <button class="footer-button" id="start_scan_button" onclick="startScan()"><img class="icon-img" src="./icons/copy.png"
+                <button class="discrete-button" onclick="copyAddress()"><img class="icon-img" src="./icons/copy.png"
                     /></button>
-                    <button class="footer-button" id="start_scan_button" onclick="startScan()"><img class="icon-img" src="./icons/share1.png"
+                    <button class="discrete-button" onclick="shareAddress()"><img class="icon-img" src="./icons/share1.png"
                         /></button>
             </div>
             <div class="last-row">

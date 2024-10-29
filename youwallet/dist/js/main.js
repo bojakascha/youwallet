@@ -99,7 +99,7 @@ function renderPage() {
         if (!allowedHashes.includes(hash)) {
             hash = '#no_wallet';
             window.location.hash = hash;
-            console.log("No wallet");            
+            console.log("No wallet");
         }
     }
 
@@ -201,11 +201,8 @@ function renderCreate() {
 
 function renderSendConfirmation() {
     console.log("RenderSenderConfirm");
-    //const target_address = document.getElementById('target_address').value;
-    //const target_amount = document.getElementById('target_amount').value;
-    //document.getElementById('confirm_target_address').value = '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa';
-    //document.getElementById('confirm_target_amount').value = '300';
-    //send('4343', '4343');
+    document.getElementById('confirm_target_address').value = document.getElementById('target_address').value
+    document.getElementById('confirm_target_amount').value = target_amount = document.getElementById('target_amount').value;
 }
 
 function generateQRCode(wallet_address) {
@@ -250,7 +247,7 @@ const html5QrCode = new Html5Qrcode("qr-reader");
 // Start the QR code scanner when you want to
 function startScan() {
     document.getElementById('start_scan_button').style.display = 'none';
-    document.getElementById('stop_scan_button').style.display = 'block';
+    document.getElementById('stop_scan_button').style.display = 'flex';
     html5QrCode.start(
         { facingMode: "environment" },  // Use back camera for mobile
         {
@@ -272,7 +269,7 @@ function startScan() {
 // Stop the scanner
 function stopScan() {
     document.getElementById('stop_scan_button').style.display = 'none';
-    document.getElementById('start_scan_button').style.display = 'block';
+    document.getElementById('start_scan_button').style.display = 'flex';
     html5QrCode.stop().then(() => {
         console.log("QR Code scanning stopped.");
     }).catch((err) => {
@@ -280,7 +277,29 @@ function stopScan() {
     });
 }
 
+function shareAddress() {
+    // Get the wallet address element
+    const walletAddressElement = document.getElementById('wallet_address');
 
+    // Get the text value (the wallet address)
+    walletAddressElement.select();
+    walletAddressElement.setSelectionRange(0, 99999); // For mobile devices
+
+    const address = walletAddressElement.value;
+    console.log("Sharing address: " + address);
+    if (navigator.share) {
+        navigator.share({
+            title: 'Shared Bitcoin Address',
+            text: `Shared Bitcoin address: ${address}`,
+            url: ''//`bitcoin:${address}`
+        })
+            .then(() => console.log('Bitcoin address shared successfully!'))
+            .catch((error) => console.error('Error sharing Bitcoin address:', error));
+    } else {
+        alert("Sharing is not supported on this browser. Address copied to clipboard.");
+        navigator.clipboard.writeText(btcAddress);
+    }
+}
 
 
 // Event listener for hash changes
@@ -290,6 +309,7 @@ window.addEventListener('hashchange', renderPage);
 //renderPage();
 
 document.addEventListener('DOMContentLoaded', () => {
-    renderPage(); 
+    renderPage();
 });
+
 
