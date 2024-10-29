@@ -1,7 +1,7 @@
 {
-    "name": "My PWA App",
-    "short_name": "PWAApp",
-    "description": "A single-page HTML app converted into a Progressive Web App.",
+    "name": "YOUWALLET",
+    "short_name": "YOUWALLET",
+    "description": "A single-page HTML BTC wallet",
     "start_url": "/youwallet/dist/index.html",
     "display": "standalone",
     "background_color": "#ffffff",
