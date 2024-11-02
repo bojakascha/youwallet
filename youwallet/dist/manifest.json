@@ -1,7 +1,7 @@
 {
     "name": "YOUWALLET",
     "short_name": "YOUWALLET",
-    "description": "A single-page HTML BTC wallet",
+    "description": "BTC Wallet for testing",
     "start_url": "/youwallet/dist/index.html",
     "display": "standalone",
     "background_color": "#ffffff",
