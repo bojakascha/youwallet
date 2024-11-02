@@ -38,44 +38,8 @@ const pages = {
     '#settings': 'settings'
 };
 
-/*function displayMnemonicTable(mnemonic) {
-    const container = document.getElementById('mnemonic-container');
-    container.innerHTML = ''; // Clear any existing content
-
-    const words = mnemonic.split(' ');
-    if (words.length !== 12) {
-        console.error('Mnemonic does not have 12 words.');
-        return;
-    }
-
-    const table = document.createElement('table');
-    table.style.borderCollapse = 'collapse';
-    table.style.marginTop = '20px';
-    table.style.width = '100%';
-    table.style.maxWidth = '400px'; // Adjust as needed
-
-    for (let i = 0; i < 3; i++) { // 3 rows
-        const row = document.createElement('tr');
-
-        for (let j = 0; j < 4; j++) { // 4 columns
-            const cell = document.createElement('td');
-            cell.style.border = '1px solid #fff';
-            cell.style.padding = '8px';
-            cell.style.textAlign = 'center';
-            cell.style.fontSize = '16px';
-            cell.textContent = words[i * 4 + j];
-            row.appendChild(cell);
-        }
-
-        table.appendChild(row);
-    }
-
-    container.appendChild(table);
-
-}*/
-
-function setSpecialButtonsVisibility(closeButtonVisible, settingsButtonVisible) {
-    document.getElementById('close-button').style.display = closeButtonVisible ? '' : 'none';
+function setFooterButtonsVisibility(backButtonVisible, settingsButtonVisible) {
+    document.getElementById('back-button').style.display = backButtonVisible ? '' : 'none';
     document.getElementById('settings-button').style.display = settingsButtonVisible ? '' : 'none';
 }
 
@@ -94,7 +58,7 @@ function renderPage() {
         window.location.hash = hash;
     }
 
-    if (!hasWallet()) {
+    if (!isInitialized()) {
         const allowedHashes = ['#no_wallet', '#create', '#restore'];
         if (!allowedHashes.includes(hash)) {
             hash = '#no_wallet';
@@ -114,38 +78,39 @@ function renderPage() {
 
     if (hash == '#wallet_home') {
         renderWalletHome();
-        setSpecialButtonsVisibility(false, true);
+        setFooterButtonsVisibility(false, true);
     }
 
     if (hash == '#create') {
         renderCreate();
-        setSpecialButtonsVisibility(true, true);
+        setFooterButtonsVisibility(true, true);
     }
 
     if (hash == '#receive') {
         renderReceive();
-        setSpecialButtonsVisibility(true, true);
+        setFooterButtonsVisibility(true, true);
     }
 
     if (hash == '#send_confirmation') {
         renderSendConfirmation();
-        setSpecialButtonsVisibility(true, true);
+        setFooterButtonsVisibility(true, true);
     }
 
     if (hash == '#no_wallet') {
-        setSpecialButtonsVisibility(false, true);
+        setFooterButtonsVisibility(false, true);
     }
 
     if (hash == '#restore') {
-        setSpecialButtonsVisibility(true, true);
+        setFooterButtonsVisibility(true, true);
     }
 
     if (hash == '#send') {
-        setSpecialButtonsVisibility(true, true);
+        setFooterButtonsVisibility(true, true);
     }
 
     if (hash == '#settings') {
-        setSpecialButtonsVisibility(true, false);
+        renderSettings();
+        setFooterButtonsVisibility(true, false);
     }
 
 }
@@ -154,12 +119,16 @@ function renderPage() {
 
 
 async function renderWalletHome() {
-    const wallet = getWallet();
+    //const wallet = getWallet();
     document.getElementById('wallet_balance').textContent = '...';
 
     try {
-        const balance = await updateWalletBalance(wallet);
-        document.getElementById('wallet_balance').textContent = balance;
+        //const balance = await updateWalletBalance(wallet);
+        const balance = await getBalance();
+        //const balance = 22;
+        document.getElementById('wallet_balance').textContent = balance.balanceSats;
+        document.getElementById('wallet_balance_sec').textContent = balance.balanceSec;
+        document.getElementById('wallet_secondary_currency').textContent = balance.secondaryCurrency;
     } catch (error) {
         document.getElementById('wallet_balance').textContent = 'Error: ' + error;
     }
@@ -213,15 +182,16 @@ function generateQRCode(wallet_address) {
     qrcodeDiv.innerHTML = ""; // Clear any existing QR code
     new QRCode(qrcodeDiv, {
         text: wallet_address,      // The address to encode in the QR code
-        width: 300,               // Width of the QR code
-        height: 300,              // Height of the QR code
+        width: 150,               // Width of the QR code
+        height: 150,              // Height of the QR code
         correctLevel: QRCode.CorrectLevel.H,  // High error correction level
         quietZone: 10
     });
 }
 
 function renderReceive() {
-    const wallet = getWallet();
+    //const wallet = getWallet();
+    const wallet = getUserData().wallet;
     const wallet_address = getAddress(wallet.xpub, 0);
     document.getElementById('wallet_address').value = wallet_address;
     generateQRCode(wallet_address);
@@ -236,8 +206,48 @@ function copyAddress() {
     walletAddressElement.select();
     walletAddressElement.setSelectionRange(0, 99999); // For mobile devices
 
-    // Use the Clipboard API to copy the address
+    // Use the Clipboard API to copy the address 
     navigator.clipboard.writeText(walletAddressElement.value);
+}
+
+function renderSettings() {
+
+    const currencySelect = document.getElementById('currency-select');
+
+    // Populate the dropdown with currency options
+    currencySelect.innerHTML = "";
+    currencies.forEach(currency => {
+        const option = document.createElement('option');
+        option.value = currency;
+        option.textContent = currency;
+        currencySelect.appendChild(option);
+    });
+    currencySelect.value = getUserData().secondaryCurrency;
+
+  /*  const networkSelect = document.getElementById('network-select');
+
+    // Populate the dropdown with currency options
+    networkSelect.innerHTML = "";
+    networks.forEach(network => {
+        const option = document.createElement('option');
+        option.value = network;
+        option.textContent = network;
+        networkSelect.appendChild(option);
+    });
+    networkSelect.value = user_data.network;
+
+    const providerSelect = document.getElementById('provider-select');
+
+    // Populate the dropdown with currency options
+    providerSelect.innerHTML = "";
+    providers.forEach(provider => {
+        const option = document.createElement('option');
+        option.value = provider;
+        option.textContent = provider;
+        providerSelect.appendChild(option);
+    });
+    providerSelect.value =  user_data.provider;*/
+
 }
 
 
@@ -311,5 +321,76 @@ window.addEventListener('hashchange', renderPage);
 document.addEventListener('DOMContentLoaded', () => {
     renderPage();
 });
+
+function showConfirmationModal(message, onConfirm) {
+    const modal = document.getElementById("confirmation-modal");
+    const modalMessage = document.getElementById("confirmation-modal-message");
+    const confirmButton = document.getElementById("confirmation-confirm-button");
+    const cancelButton = document.getElementById("confirmation-cancel-button");
+
+    // Set the message
+    modalMessage.textContent = message;
+
+    // Show the modal
+    modal.style.display = "flex";
+
+    // Set up button actions
+    confirmButton.onclick = () => {
+        modal.style.display = "none"; // Hide modal
+        onConfirm(); // Run the confirm callback
+    };
+
+    cancelButton.onclick = () => {
+        modal.style.display = "none"; // Hide modal
+    };
+}
+
+function showNotificationModal(message) {
+    const modal = document.getElementById("notification-modal");
+    const modalMessage = document.getElementById("notification-modal-message");
+    const cancelButton = document.getElementById("notification-cancel-button");
+
+    // Set the message
+    modalMessage.textContent = message;
+
+    // Show the modal
+    modal.style.display = "flex";
+
+    cancelButton.onclick = () => {
+        modal.style.display = "none"; // Hide modal
+    };
+}
+
+function saveSettings() {
+    updateAndStoreCurrency(document.getElementById('currency-select').value);
+    /*session_object.network = document.getElementById('network-select').value;
+    session_object.provider = document.getElementById('provider-select').value;*/
+    navigateTo('#wallet_home');
+}
+
+function showDownloadLink() {
+    const modal = document.getElementById("notification-modal");  
+    const cancelButton = document.getElementById("notification-cancel-button");
+    const modalHeader = document.getElementById("notification-modal-header");
+    const modalMessage = document.getElementById("notification-modal-message"); 
+
+    const link = "www.kth.se";
+
+    modalHeader.innerHTML = "";
+    modalHeader.innerHTML = "Download this app";
+    modalMessage.innerHTML = ""; // Clear any existing QR code
+    new QRCode(modalMessage, {
+        text: link,      // The address to encode in the QR code
+        width: 150,               // Width of the QR code
+        height: 150,              // Height of the QR code
+        correctLevel: QRCode.CorrectLevel.H,  // High error correction level
+        quietZone: 30
+    });
+
+    modal.style.display = "flex";
+    cancelButton.onclick = () => {
+        modal.style.display = "none"; // Hide modal
+    };
+}
 
 

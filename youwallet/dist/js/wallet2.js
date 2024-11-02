@@ -9,6 +9,17 @@ const blockcypherTestnet = {
     scriptHash: 0x1f,  // Address starts with 2 for P2SH
     wif: 0xef  // Testnet WIF
 };
+
+/*const networks = [
+    'blockcypher testnet'
+]
+
+const providers = [
+    'blockcypher',
+    'bitstream'
+]*/
+
+
 const token = 'd0ffad34bf824bc58fc144771993ebc5';
 
 //const network = window.bitcoin.networks.testnet;
@@ -20,7 +31,82 @@ const ecpair = window.ecpair.ECPairFactory(window.ecc);
 
 const fee = 5;
 
+const balanceUpdated_timems = 0;
 
+/*var user_data = {
+    wallet: {
+        mnemonic: null,
+        xpub: null,
+        balance: 0
+    },
+    secondaryCurrency: 'usd',
+    hashedPassword: null
+}*/
+
+var _user_data =  null;
+
+function getUserData() {
+    if(!_user_data) {
+        _user_data = JSON.parse(localStorage.getItem('user_data'));
+        //_user_data = storedData ? JSON.parse(storedData) : null;
+    }
+    return _user_data;
+}
+
+function isInitialized() {
+    return getUserData() != null;
+}
+
+function updateAndStoreUserData(user_data) {
+    _user_data = user_data;
+    localStorage.setItem('user_data', JSON.stringify(_user_data));
+    console.log("updateAndStoreUserData: " + JSON.stringify(_user_data));
+}
+
+function updateAndStoreBalance(balanceSats, balanceSec) {
+    let user_data = getUserData();
+    let secondaryCurrency = user_data.balance.secondaryCurrency;
+    user_data.balance = {
+        balanceSats: balanceSats,
+        secondaryCurrency: secondaryCurrency,
+        balanceSec: balanceSec
+    }
+    updateAndStoreUserData(user_data);
+}
+
+function updateAndStoreCurrency(secondaryCurrency) {
+    let user_data = getUserData();
+    user_data.balance = {
+        balanceSats: user_data.balanceSats,
+        secondaryCurrency: secondaryCurrency,
+        balanceSec: user_data.balanceSec
+    }
+    updateAndStoreUserData(user_data);
+}
+
+function createUserData(walletData) {
+    const user_data = {
+        wallet: walletData,
+        balance: {
+            balanceSats: 0,
+            secondaryCurrency: 'sek',
+            balanceSec: 0
+        }
+    }
+    console.log("createUserData: " + JSON.stringify(user_data));
+    return user_data;
+}
+
+async function getBalance() {
+    if(Date.now() > balanceUpdated_timems + 300000) {
+       balanceSats = await updateWalletBalance(getUserData().wallet); 
+       const curToBTC = await getExchangeRateToBTC(getUserData().balance.secondaryCurrency); 
+       
+       const balanceSec = (balanceSats > 0) ? Number((balanceSats / 100000000 * curToBTC).toFixed(1)).toFixed(2) : 0;
+       updateAndStoreBalance(balanceSats, balanceSec);
+    } 
+    return getUserData().balance;
+}
 
 function createWallet(mnemonic) {
     const seed = window.bip39.mnemonicToSeedSync(mnemonic);
@@ -32,8 +118,20 @@ function createWallet(mnemonic) {
         mnemonic: mnemonic,
         xpub: xpub
     };
-    localStorage.setItem('wallet', JSON.stringify(walletData));
+    //localStorage.setItem('wallet', JSON.stringify(walletData));
+    console.log("createWallet: " + JSON.stringify(walletData));
+    updateAndStoreUserData(createUserData(walletData));
     navigateTo('#wallet_home');
+}
+
+function handleCurrencyChange(currency)  {
+    console.log("Currency selected: " + currency);
+}
+
+function deleteWallet() {
+    localStorage.removeItem('user_data');
+    navigateTo('#no_wallet');
+    console.log("Wallet deleted");
 }
 
 function getAddress(xpub, index) {
@@ -44,9 +142,29 @@ function getAddress(xpub, index) {
     return address;
 }
 
-function hasWallet() {
-    return localStorage.getItem('wallet') !== null;
+async function getExchangeRateToBTC(currency) {
+    const url = `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currency}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        // Check if the response contains the exchange rate
+        if (data.bitcoin && data.bitcoin[currency]) {
+            console.log(`1 BTC = ${data.bitcoin[currency]} ${currency.toUpperCase()}`);
+            return data.bitcoin[currency];
+        } else {
+            console.error("Exchange rate not found");
+        }
+    } catch (error) {
+        console.error("Error fetching exchange rate:", error);
+    }
 }
+
+/*function hasWallet() {
+    console.log("HasWallet: " +_user_data != null);
+    return _user_data != null;
+}*/
 
 function generateMnemonic() {
     const mnemonic = window.bip39.generateMnemonic();
@@ -55,12 +173,8 @@ function generateMnemonic() {
 }
 
 function getWallet() {
-    let walletData = JSON.parse(localStorage.getItem('wallet'));
-    const wallet = new Object();
-    wallet.mnemonic = walletData.mnemonic;
-    wallet.xpub = walletData.xpub;
-    wallet.balance = 0.0012345;
-    return wallet;
+    console.log("getWallet: " + JSON.stringify(getUserData().wallet));
+    return getUserData().wallet;
 }
 
 function getNextAddress(wallet) {
@@ -288,4 +402,69 @@ async function send(target_address, amount) {
 }
 
 // new comment
+
+const currencies = [
+    "btc",
+    "eth",
+    "ltc",
+    "bch",
+    "bnb",
+    "eos",
+    "xrp",
+    "xlm",
+    "link",
+    "dot",
+    "yfi",
+    "usd",
+    "aed",
+    "ars",
+    "aud",
+    "bdt",
+    "bhd",
+    "bmd",
+    "brl",
+    "cad",
+    "chf",
+    "clp",
+    "cny",
+    "czk",
+    "dkk",
+    "eur",
+    "gbp",
+    "gel",
+    "hkd",
+    "huf",
+    "idr",
+    "ils",
+    "inr",
+    "jpy",
+    "krw",
+    "kwd",
+    "lkr",
+    "mmk",
+    "mxn",
+    "myr",
+    "ngn",
+    "nok",
+    "nzd",
+    "php",
+    "pkr",
+    "pln",
+    "rub",
+    "sar",
+    "sek",
+    "sgd",
+    "thb",
+    "try",
+    "twd",
+    "uah",
+    "vef",
+    "vnd",
+    "zar",
+    "xdr",
+    "xag",
+    "xau",
+    "bits",
+    "sats"
+  ];
 
