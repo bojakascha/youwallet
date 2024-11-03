@@ -258,6 +258,9 @@ main {
     font-size: 4rem;
 }
 
+.invisible {
+    color: var(--background-color-container);
+}
 .small-text {
     font-size: 1rem;
     color: white;
