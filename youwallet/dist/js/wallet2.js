@@ -216,6 +216,7 @@ async function fetBalanceBlockStream(address) {
 async function fetchBalance(address) {
     //const apiUrl = `https://api.blockcypher.com/v1/btc/test3/addrs/${address}/balance`;
     const apiUrl = `https://api.blockcypher.com/v1/bcy/test/addrs/${address}/balance`;
+    //const apiUrl = `https://cors-anywhere.herokuapp.com/https://api.blockcypher.com/v1/bcy/test/addrs/${address}/balance`;
     console.log("Quering: " + apiUrl);
     try {
         const response = await fetch(apiUrl);

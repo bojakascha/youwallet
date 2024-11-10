@@ -33,7 +33,7 @@ function showError(error) {
     modalHeader.innerHTML = "";
     modalHeader.innerHTML = "Error";
     modalMessage.innerHTML = ""; // Clear any existing QR code
-    modalMessage.innerHTML = error;
+    modalMessage.innerHTML = error.message;
     modal.style.display = "flex";
     cancelButton.onclick = () => {
         modal.style.display = "none"; // Hide modal
