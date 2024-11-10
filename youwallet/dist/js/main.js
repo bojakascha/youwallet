@@ -24,6 +24,22 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+function showError(error) {
+    const modal = document.getElementById("notification-modal");  
+    const cancelButton = document.getElementById("notification-cancel-button");
+    const modalHeader = document.getElementById("notification-modal-header");
+    const modalMessage = document.getElementById("notification-modal-message"); 
+
+    modalHeader.innerHTML = "";
+    modalHeader.innerHTML = "Error";
+    modalMessage.innerHTML = ""; // Clear any existing QR code
+    modalMessage.innerHTML = error;
+    modal.style.display = "flex";
+    cancelButton.onclick = () => {
+        modal.style.display = "none"; // Hide modal
+    }; 
+}
+
 console.log("JS running");
 
 // ** Navigation logic
@@ -130,7 +146,7 @@ async function renderWalletHome() {
         document.getElementById('wallet_balance_sec').textContent = balance.balanceSec;
         document.getElementById('wallet_secondary_currency').textContent = balance.secondaryCurrency;
     } catch (error) {
-        document.getElementById('wallet_balance').textContent = 'Error: ' + error;
+        showError(error);
     }
 
 }
@@ -392,5 +408,7 @@ function showDownloadLink() {
         modal.style.display = "none"; // Hide modal
     };
 }
+
+
 
 
