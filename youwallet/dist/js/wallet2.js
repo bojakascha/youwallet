@@ -161,6 +161,7 @@ async function getExchangeRateToBTC(currency) {
         }
     } catch (error) {
         console.error("Error fetching exchange rate:", error);
+        throw error;
     }
 }
 
@@ -207,6 +208,7 @@ async function fetBalanceBlockStream(address) {
         console.log(`Balance for address ${address}: ${data.chain_stats.funded_txo_sum} satoshis`);
     } catch (error) {
         console.error('Error fetching balance:', error.message);
+        throw error;
     }   
     return data.chain_stats.funded_txo_sum;
 }
@@ -224,7 +226,8 @@ async function fetchBalance(address) {
         };
     } catch (error) {
         console.error(`Error fetching balance for ${address}:`, error);
-        return null;
+        //return null;
+        throw error;
     }
 }
 
@@ -301,7 +304,8 @@ async function getUTXOs(pubKey) {
         }];
     } catch (error) {
         console.error(`Error: ${address}:`, error);
-        return null;
+        //return null;
+        throw error;
     }
 }
 
@@ -399,7 +403,9 @@ async function send(target_address, amount) {
         console.log("Transacion broadcasted: " + data);
     } catch (error) {
         console.error(error.message);
+        throw error;
     }
+
 
     //navigateTo('#wallet_home');
 }
