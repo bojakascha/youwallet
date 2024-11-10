@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouWallet</title>
+
+    <!-- <meta name="theme-color" content="#000000">-->
+    <style>
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .wallet-container {
+            width: 300px;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 250px auto 0;
+            position: relative;
+            z-index: 1;
+            /* Ensures the container appears above other elements */
+        }
+
+        #topImage {
+            width: 100%;
+            /* Ensure the image spans the full width of the page */
+            height: auto;
+            /* Adjust the height proportionally */
+        }
+
+        .top-container {
+            display: flex;
+            justify-content: center;
+            /* Centers the image horizontally */
+            align-items: flex-start;
+            /* Aligns the image to the top */
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            background-color: #3581AC;
+            cursor: pointer;
+            margin: 30px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top_container">
+        <img id="topimage" src="icons/yw512.png" />
+    </div>
+
+    <div id="wallet_home" class="wallet-container" style="display: block;">
+        <p><span class="discrete-text">Balance:</span><span class="large-text">&nbsp;</span>0.03<span
+                class="large-text">&nbsp;</span><span class="discrete-text">BTC</span>
+        </p>
+        <button>Send</button>
+        <button>Receive</button>
+    </div>
+
+</body>
+
+</html>
