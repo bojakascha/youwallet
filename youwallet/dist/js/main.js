@@ -40,7 +40,7 @@ const pages = {
 
 function setFooterButtonsVisibility(backButtonVisible, settingsButtonVisible) {
     document.getElementById('back-button').style.display = backButtonVisible ? '' : 'none';
-    document.getElementById('settings-button').style.display = settingsButtonVisible ? '' : 'none';
+    document.getElementById('settings-button').className = settingsButtonVisible ? 'settings-button' : 'settings-button-invisible';
 }
 
 
@@ -377,7 +377,7 @@ function showDownloadLink() {
     const link = window.location.href;
 
     modalHeader.innerHTML = "";
-    modalHeader.innerHTML = "Download this app3";
+    modalHeader.innerHTML = "Download this app";
     modalMessage.innerHTML = ""; // Clear any existing QR code
     new QRCode(modalMessage, {
         text: link,      // The address to encode in the QR code
