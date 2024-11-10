@@ -31,7 +31,7 @@ const ecpair = window.ecpair.ECPairFactory(window.ecc);
 
 const fee = 5;
 
-const balanceUpdated_timems = 0;
+var balanceUpdated_timems = 0;
 
 /*var user_data = {
     wallet: {
@@ -98,12 +98,15 @@ function createUserData(walletData) {
 }
 
 async function getBalance() {
+    console.log("Date.now(): " + Date.now());
+    console.log("balanceUpdated_timems: " + balanceUpdated_timems);
     if(Date.now() > balanceUpdated_timems + 300000) {
        balanceSats = await updateWalletBalance(getUserData().wallet); 
        const curToBTC = await getExchangeRateToBTC(getUserData().balance.secondaryCurrency); 
        
        const balanceSec = (balanceSats > 0) ? Number((balanceSats / 100000000 * curToBTC).toFixed(1)).toFixed(2) : 0;
        updateAndStoreBalance(balanceSats, balanceSec);
+       balanceUpdated_timems = Date.now();
     } 
     return getUserData().balance;
 }

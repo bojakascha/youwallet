@@ -222,7 +222,7 @@ function renderSettings() {
         option.textContent = currency;
         currencySelect.appendChild(option);
     });
-    currencySelect.value = getUserData().secondaryCurrency;
+    currencySelect.value = getUserData().balance.secondaryCurrency;
 
   /*  const networkSelect = document.getElementById('network-select');
 
