@@ -29,7 +29,7 @@ const network_key = 1;
 const bip32 = window.bip32.BIP32Factory(window.ecc);
 const ecpair = window.ecpair.ECPairFactory(window.ecc);
 
-const fee = 5;
+const fee = 1;
 
 var balanceUpdated_timems = 0;
 
@@ -343,11 +343,13 @@ async function send(target_address, amount) {
     }
 
     // Check if you have enough UTXO value to cover the amount + fee
-    const totalInputValue = utxos.reduce((sum, utxo) => sum + utxo.value, 0);
-    if (totalInputValue < amount + fee) {
+   const totalInputValue = utxos.reduce((sum, utxo) => sum + utxo.value, 0);
+    console.log("totalInputValue: " + totalInputValue);
+    /*if (totalInputValue < amount + fee) {  / NOT IMPLEMTED CORRECTLY!!
         console.error('Insufficient UTXO value for the transaction.');
-        return;
-    }
+        //return;
+        throw new Error("Insufficient funds!");
+    }*/
 
     // Add the output for the recipient
     try {
@@ -357,6 +359,7 @@ async function send(target_address, amount) {
         });
     } catch (error) {
         console.error('error adding output: ', error);
+        throw error;
     }
 
     // Add the change output if needed

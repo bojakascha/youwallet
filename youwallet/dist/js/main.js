@@ -50,7 +50,6 @@ const pages = {
     '#restore': 'restore',
     '#send': 'send',
     '#receive': 'receive',
-    '#send_confirmation': 'send_confirmation',
     '#settings': 'settings'
 };
 
@@ -337,6 +336,17 @@ window.addEventListener('hashchange', renderPage);
 document.addEventListener('DOMContentLoaded', () => {
     renderPage();
 });
+
+async function doSend() {
+    console.log("Inside doSend");
+    const address = document.getElementById("target_address").value;
+    const amount = document.getElementById("target_amount").value;
+    try {
+        await send(address, amount);
+    } catch (error) {
+        showError(error);
+    }
+}
 
 function showConfirmationModal(message, onConfirm) {
     const modal = document.getElementById("confirmation-modal");

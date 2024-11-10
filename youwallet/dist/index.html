@@ -21,13 +21,13 @@
             <div class="row" style="display: flex; justify-content: center; align-items: center; ">
                 <p class="discrete-text invisible">sats</p>
                 <p id="wallet_balance" class="large-text">...</p>
-                <p class="discrete-text" >&nbsp;</p>
-                <p class="discrete-text" >sats</p>
+                <p class="discrete-text">&nbsp;</p>
+                <p class="discrete-text">sats</p>
             </div>
             <div class="row">
                 <p id="wallet_balance_sec" class="discrete-text">...</p>
                 <p id="wallet_secondary_currency" class="discrete-text" style="font-size: 1rem;">...</p>
-                
+
             </div>
             <div class="row">
                 &nbsp;
@@ -46,7 +46,8 @@
 
         <div id="no_wallet" class="wallet-container" style="display: none;">
             <div class="header-row">
-                <p class="discrete-text">No wallet found on this device</p><br/><p class="discrete-text">Restore an existing wallet or create a new one
+                <p class="discrete-text">No wallet found on this device</p><br />
+                <p class="discrete-text">Restore an existing wallet or create a new one
                 </p>
             </div>
             <div class="last-row">
@@ -58,10 +59,12 @@
         <div id="restore" class="wallet-container" style="display: none;">
             <div class="header-row">Restore</div>
             <div class="row">
-                <input type="text" class="address-input" id="mnemonic_to_restore" placeholder="Seed phrase" required></input>
+                <input type="text" class="address-input" id="mnemonic_to_restore" placeholder="Seed phrase"
+                    required></input>
             </div>
             <div class="last-row">
-                <button class="blue-button" onclick="createWallet(document.getElementById('mnemonic_to_restore').value);">Restore</button>
+                <button class="blue-button"
+                    onclick="createWallet(document.getElementById('mnemonic_to_restore').value);">Restore</button>
             </div>
         </div>
 
@@ -72,13 +75,14 @@
             <div class="row">
                 <p class="discrete-text">Record your seed phrase</p>
             </div>
-           
-                <div id="mnemonic-container" class="mnemonic-container"></div>
-           
+
+            <div id="mnemonic-container" class="mnemonic-container"></div>
+
             <div class="last-row">
-                <button class="blue-button" onclick="createWallet(document.getElementById('mnemonic').value);">Create Wallet</button>  
+                <button class="blue-button" onclick="createWallet(document.getElementById('mnemonic').value);">Create
+                    Wallet</button>
             </div>
-                <input class="hidden" type="hidden" id="mnemonic" />
+            <input class="hidden" type="hidden" id="mnemonic" />
         </div>
 
         <div id="send" class="wallet-container" style="display: none;">
@@ -88,9 +92,9 @@
 
             <div class="row">
                 <input type="text" id="target_address" class="address-input" placeholder="Target Address" required />
-                <button class="footer-button" id="start_scan_button" onclick="startScan()"><img class="icon-img" src="./icons/qrcode4.png"
-                    /></button>
-                    <button id="stop_scan_button" style="display: none;" onclick="stopScan()">Stop Scanning</button>
+                <button class="footer-button" id="start_scan_button" onclick="startScan()"><img class="icon-img"
+                        src="./icons/qrcode4.png" /></button>
+                <button id="stop_scan_button" style="display: none;" onclick="stopScan()">Stop Scanning</button>
             </div>
             <div id="qr-reader" width="600px"></div>
 
@@ -98,47 +102,25 @@
                 <input type="text" class="amount-input" id="target_amount" placeholder="Amount" required />
                 <p class="discrete-text">sats</p>
             </div>
-            <div class="last-row"></div>
-                <button class="blue-button" onclick="showConfirmationModal('Send 300 sats to bc1434324343?', send());">Send</button>
-            </div>
-        </div>
-
-
-        <div id="send_confirmation" class="wallet-container" style="display: none;">
-            <div class="header-row">
-                <p class="discrete-text">Confirm Transfer</p>
-            </div>
-            <div class="row">
-                <p class="discrete-text">Receiving address:</p>  
-            </div>
-            <div class="row">
-                <input class="address-input" type="text" id="confirm_target_address" readonly>
-            </div>
-            <div class="row">
-                <p>&nbsp;</p>
-            </div>
-            <div class="row">
-                <p class="discrete-text">Amount:</p>  
-            </div>
-            <div class="row">
-                <input class="amount-input" type="text" id="confirm_target_amount" readonly>
-                <p class="discrete-text">sats</p>
-            </div>
             <div class="last-row">
-                <button class="blue-button" onclick="navigateTo('#wallet_home')">Confirm</button>
+                <button class="blue-button"
+                    onclick="showConfirmationModal('Send 300 sats to bc1434324343?', doSend);">Send</button>
             </div>
         </div>
+
 
         <div id="settings" class="wallet-container" style="display: none;">
             <div class="header-row">
                 <p class="discrete-text">Settings</p>
             </div>
-           <div class="row">
+            <div class="row">
                 <p class="discrete-text" style="width: 100%; text-align: left;">Secondary currency</p>
                 <select class="discrete-text" id="currency-select" style="display: flex;"></select>
             </div>
             <div class="row">
-                <button class="discrete-button" onclick="showConfirmationModal('This deletes the current wallet from the device, pass phrase will be needed to recover it', deleteWallet);">Remove Wallet</button>
+                <button class="discrete-button"
+                    onclick="showConfirmationModal('This deletes the current wallet from the device, pass phrase will be needed to recover it', deleteWallet);">Remove
+                    Wallet</button>
             </div>
             <div class="row">
                 <button class="discrete-button" onclick="showDownloadLink('');">Share App</button>
@@ -159,42 +141,40 @@
                 <input type="text" class="address-input" id="wallet_address" readonly />
             </div>
             <div class="row">
-                <button onclick="copyAddress()"><img class="icon-img" src="./icons/copy.png"
-                    /></button>
-                    <button onclick="shareAddress()"><img class="icon-img" src="./icons/share1.png"
-                        /></button>
+                <button onclick="copyAddress()"><img class="icon-img" src="./icons/copy.png" /></button>
+                <button onclick="shareAddress()"><img class="icon-img" src="./icons/share1.png" /></button>
             </div>
             <div class="last-row">
                 <button class="blue-button" onclick="navigateTo('#wallet_home')">Done</button>
             </div>
         </div>
 
-        <div id="confirmation-modal" class="modal"  style="display: none;">
-            <div class="confirmation-modal-content">                
+        <div id="confirmation-modal" class="modal" style="display: none;">
+            <div class="confirmation-modal-content">
                 <div class="row">
-                    <p class="small-text" id="confirmation-modal-message"></p> 
+                    <p class="small-text" id="confirmation-modal-message"></p>
                 </div>
                 <div class="last-row">
                     <button id="confirmation-cancel-button" class="blue-button">Cancel</button>
                     <button id="confirmation-confirm-button" class="blue-button">Confirm</button>
                 </div>
-                               
+
             </div>
         </div>
 
-        <div id="notification-modal" class="modal"  style="display: none;">
+        <div id="notification-modal" class="modal" style="display: none;">
             <div class="notification-modal-content">
                 <div class="header-row">
                     <p id="notification-modal-header" class="discrete-text"></p>
                 </div>
                 <div class="row">
-                    <p class="small-text" id="notification-modal-message"></p> 
+                    <p class="small-text" id="notification-modal-message"></p>
                 </div>
-                <br/>
+                <br />
                 <div class="last-row">
                     <button id="notification-cancel-button" class="blue-button">Close</button>
                 </div>
-                               
+
             </div>
         </div>
 
