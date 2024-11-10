@@ -374,18 +374,18 @@ function showDownloadLink() {
     const modalHeader = document.getElementById("notification-modal-header");
     const modalMessage = document.getElementById("notification-modal-message"); 
 
-    const link = "www.kth.se";
+    const link = window.location.href;
 
     modalHeader.innerHTML = "";
-    modalHeader.innerHTML = "Download this app";
+    modalHeader.innerHTML = "Download this app3";
     modalMessage.innerHTML = ""; // Clear any existing QR code
     new QRCode(modalMessage, {
         text: link,      // The address to encode in the QR code
         width: 150,               // Width of the QR code
         height: 150,              // Height of the QR code
-        correctLevel: QRCode.CorrectLevel.H,  // High error correction level
-        quietZone: 30
+        correctLevel: QRCode.CorrectLevel.H
     });
+    modalMessage.style = "background-color: white; padding: 20px;"
 
     modal.style.display = "flex";
     cancelButton.onclick = () => {

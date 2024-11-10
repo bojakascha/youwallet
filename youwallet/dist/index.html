@@ -100,9 +100,13 @@
                 <input type="text" class="amount-input" id="target_amount" placeholder="Amount" required />
                 <p class="discrete-text">sats</p>
             </div>
-            <div class="last-row">
+            <!--<div class="last-row">
                 <button class="blue-button" type="submit"
                     onclick="navigateTo('#send_confirmation')">Send</button>
+                    
+            </div>-->
+            <div class="last-row"></div>
+                <button class="blue-button" onclick="showConfirmationModal('Send 300 sats to bc1434324343?', send());">Send</button>
             </div>
         </div>
 
@@ -150,7 +154,7 @@
                 <button class="discrete-button" onclick="showConfirmationModal('This deletes the current wallet from the device, pass phrase will be needed to recover it', deleteWallet);">Remove Wallet</button>
             </div>
             <div class="row">
-                <button class="discrete-button" onclick="showDownloadLink('');">App Link</button>
+                <button class="discrete-button" onclick="showDownloadLink('');">Share App</button>
             </div>
             <div class="last-row">
                 <button class="blue-button" onclick="saveSettings();">Save Settings</button>
@@ -162,7 +166,7 @@
                 <p class="discrete-text">Receive address</p>
             </div>
             <div class="row">
-                <div id="qrcode" class="qrcode"></div>
+                <div id="qrcode" class="qrcode" style="background-color: white; padding: 20px;"></div>
             </div>
             <div class="row">
                 <input type="text" class="address-input" id="wallet_address" readonly />
@@ -196,6 +200,7 @@
                 <div class="header-row">
                     <p id="notification-modal-header" class="discrete-text"></p>
                 </div>
+                <!--<div class="row" style="background-color: white; padding: 10px; display: inline-block;">-->
                 <div class="row">
                     <p class="small-text" id="notification-modal-message"></p> 
                 </div>
